@@ -22,6 +22,7 @@ export class GameManager {
     socket.on("message", (data) => {
       const message = JSON.parse(data.toString());
       if (message.type === INIT_GAME) {
+        console.log("pending user ", this.pendingUser);
         if (this.pendingUser) {
           const game = new Game(this.pendingUser, socket);
           this.games.push(game);

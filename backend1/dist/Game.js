@@ -25,6 +25,7 @@ class Game {
         }));
     }
     makeMove(socket, move) {
+        console.log("move ", move);
         if (this.moveNumber % 2 === 0 && socket !== this.player1) {
             return;
         }
@@ -52,7 +53,6 @@ class Game {
             }));
             return;
         }
-        console.log("this --> ", this.moveNumber);
         if (this.moveNumber % 2 === 0) {
             this.player2.send(JSON.stringify({
                 type: messages_1.MOVE,
