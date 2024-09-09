@@ -11,6 +11,7 @@ export const Game = () => {
   const socket = useSocket();
   const [chess] = useState(new Chess());
   const [board, setBoard] = useState(chess.board());
+  const [started, setStarted] = useState(false);
 
   // Handle incoming socket messages
   useEffect(() => {
@@ -23,7 +24,7 @@ export const Game = () => {
         case INIT_GAME:
           chess.reset();
           setBoard(chess.board());
-          console.log("game initialized");
+          setStarted(true);
           break;
         case MOVE:
           const move = message.payload;
@@ -60,11 +61,18 @@ export const Game = () => {
           <div className="max-w-screen-lg w-full">
             <div className="grid grid-cols-6 mt-4 gap-4 w-full">
               <div className="col-span-4 w-full flex justify-center">
-                <ChessBoard board={board} socket />
+                <ChessBoard
+                  board={board}
+                  socket={socket}
+                  chess={chess}
+                  setBoard={setBoard}
+                />
               </div>
-              <div className="col-span-2 w-full">
-                <Button onClick={handleClick}>Play Online</Button>
-              </div>
+              {!started && (
+                <div className="col-span-2 w-full">
+                  <Button onClick={handleClick}>Play Online</Button>
+                </div>
+              )}
             </div>
           </div>
         </div>
