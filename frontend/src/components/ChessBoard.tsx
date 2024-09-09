@@ -2,9 +2,13 @@ import { Color, PieceSymbol, Square } from "chess.js";
 import { useEffect, useState } from "react";
 import { MOVE } from "../screens/Game";
 export const ChessBoard = ({
+  chess,
+  setBoard,
   board,
   socket,
 }: {
+  chess: any;
+  setBoard: any;
   board: ({
     square: Square;
     type: PieceSymbol;
@@ -21,12 +25,13 @@ export const ChessBoard = ({
         return (
           <div key={i} className="flex">
             {row.map((square, j) => {
-              const squareRepresentation = (String.fromCharCode(65 + (j % 8)) +
+              const squareRepresentation = (String.fromCharCode(97 + (j % 8)) +
                 "" +
-                (8 - Math.floor((i + j) / 8))) as Square;
+                (8 - i)) as Square;
               return (
                 <div
                   onClick={() => {
+                    console.log("from --> ", from);
                     if (!from) {
                       setFrom(squareRepresentation);
                     } else {
@@ -35,12 +40,18 @@ export const ChessBoard = ({
                         JSON.stringify({
                           type: MOVE,
                           payload: {
-                            from: from,
-                            to: squareRepresentation,
+                            move: {
+                              from: from,
+                              to: squareRepresentation,
+                            },
                           },
                         })
                       );
-                      console.log("from ", from, "to ", to);
+                      chess.move({
+                        from: from,
+                        to: squareRepresentation,
+                      });
+                      setBoard(chess.board());
                       setFrom(null);
                       setTo(null);
                     }
@@ -52,7 +63,16 @@ export const ChessBoard = ({
                 >
                   <div className="w-full h-full flex justify-center align-center">
                     <div className="h-full justify-center flex flex-col">
-                      {square ? square.type : ""}
+                      {square ? (
+                        <img
+                          className="w-[4.25rem]"
+                          src={`/${
+                            square?.color === "b"
+                              ? `b${square.type}`
+                              : `w${square.type}`
+                          }.png`}
+                        />
+                      ) : null}
                     </div>
                   </div>
                 </div>
